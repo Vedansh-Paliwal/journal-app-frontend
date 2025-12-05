@@ -1,0 +1,201 @@
+.entries {
+    padding: 10px 20px;
+}
+.entry {
+    position: relative;
+    background-color: white;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.new-entry {
+    width: 100%;
+    padding-top: 40px;
+    display: none;
+}
+.entry-form {
+    background-color: white;
+    width: 40%;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: auto;
+}
+.entry-form h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.entry-input, .entry-textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid gray;
+    font-size: 1rem;
+}
+.entry-textarea {
+    height: 150px;
+    resize: vertical;
+}
+.entry-submit-btn {
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.entry-submit-btn:hover {
+    background-color: #0056b3;
+}
+.delete-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: red;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.delete-btn:hover {
+    background-color: rgb(198, 0, 0);
+}
+.update-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 100px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #04AA6D;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.update-btn:hover {
+    background-color: #048253;
+}
+.entry-update-btn {
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.entry-update-btn:hover {
+    background-color: #0056b3;
+}
+.edit-profile {
+    display: none;
+    width: 30%;
+    padding-left: 20px;
+    padding-top: 20px;
+}
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: rgb(215, 228, 255);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.row1 {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+.row2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.row3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.password-fields .password-error {
+    color: red;
+    display: none;
+    font-size: 0.75rem;
+}
+.password-fields .old-password-error {
+    color: red;
+    display: none;
+    font-size: 0.75rem;
+}
+.row3 input {
+    padding: 5px 15px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.username-input {
+    padding: 5px 15px;
+    border-radius: 5px;
+    width: 100%;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.change-pass-link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+.change-pass-link:hover {
+    color: #0056b3;
+}
+.password-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.password-fields label {
+    font-size: 0.85rem;
+}
+.save-btn {
+    width: 35%;
+    padding: 5px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.save-btn:hover {
+    background-color: #0066d3;
+}
+.delete {
+    width: 35%;
+    padding: 5px;
+    background-color: red;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.delete:hover {
+    background-color: rgb(198, 0, 0);
+}
+.success-message {
+    color: green;
+    display: none;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
