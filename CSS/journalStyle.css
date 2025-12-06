@@ -4,12 +4,6 @@
     box-sizing: border-box;
     font-family: 'Poppins';
 }
-.header, .main {
-    display: none;
-}
-.show-header {
-    display: block;
-}
 /* <----------------------------------------------------- NAVBAR -----------------------------------------------------> */
 .navbar {
     height: 10vh;
@@ -66,10 +60,11 @@
 .dropdown p:hover {
     background-color: #5a5aa3;
 }
-/* <----------------------------------------------------- CENTER CONTENT -----------------------------------------------------> */
-.show-main { 
-    display: flex;
+/* Dropdown visible when .show class added */
+.dropdown.show { /* elements that have BOTH classes: dropdown AND show. */
+    display: block;
 }
+/* <----------------------------------------------------- CENTER CONTENT -----------------------------------------------------> */
 .main {
     width: 100%;
     height: 90vh;

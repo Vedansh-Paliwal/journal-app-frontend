@@ -40,7 +40,8 @@ const submitData = async (event) => {
             })
         });
         if (!response.ok) {
-            console.log("Login failed:", response.status);
+            alert("Incorrect username or password! Please try again");
+            window.location.href = "index.html";
             return;
         }
         const token = await response.text();

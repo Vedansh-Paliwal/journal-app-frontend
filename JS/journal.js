@@ -8,6 +8,22 @@ let editProfile = document.querySelector(".edit-profile-btn");
 URL_JOURNAL = "http://localhost:8080/journal";
 URL_USER = "http://localhost:8080/user";
 
+function hideAllSections() {
+    // Hide the four main UI sections
+    document.querySelector(".content").style.display = "none";
+    document.querySelector(".entries").style.display = "none";
+    document.querySelector(".new-entry").style.display = "none";
+    document.querySelector(".edit-profile").style.display = "none";
+
+    // Clear dynamic content so old UI does not remain visible
+    document.querySelector(".entries").innerHTML = "";
+    document.querySelector(".new-entry").innerHTML = "";
+    document.querySelector(".edit-profile").innerHTML = "";
+
+    // The main wrapper stays visible after login
+    document.querySelector(".main").style.display = "block";
+}
+
 window.onload = () => { // = “Run this only after the HTML is fully loaded.”, Not using window.onload = Sometimes JS runs before HTML exists → errors. You can only select an element in JS if that element already exists in the HTML at the time JS runs.
     let tokenValue = localStorage.getItem("token");
     const header = document.querySelector(".header");
@@ -23,19 +39,31 @@ window.onload = () => { // = “Run this only after the HTML is fully loaded.”
         window.location.href = "index.html";
         return;
     }
-
-    header.classList.add("show-header");
-    main.classList.add("show-main");
+    header.style.display = "block";
+    main.style.display = "flex";
 };
 
+// Open/close dropdown when clicking on parent
 parents.forEach(parent => {
-    parent.addEventListener("mouseenter", function() {
+    parent.addEventListener("click", function (event) {
+        event.stopPropagation(); // stopPropagation() prevents a click on dropdown from also triggering the “click outside” logic.
+
         const dropdown = parent.querySelector(".dropdown");
-        dropdown.style.display = "block";
+
+        // Close any other open dropdowns
+        document.querySelectorAll(".dropdown.show").forEach(openDropdown => {
+            if (openDropdown !== dropdown) openDropdown.classList.remove("show");
+        });
+
+        // Toggle this dropdown
+        dropdown.classList.toggle("show"); // If class exists → remove it  |  If class doesn’t exist → add it
     });
-    parent.addEventListener("mouseleave", () => {
-        const dropdown = parent.querySelector(".dropdown");
-        dropdown.style.display = "none";
+});
+
+// Close dropdowns when clicking anywhere else
+window.addEventListener("click", () => {
+    document.querySelectorAll(".dropdown.show").forEach(openDropdown => {
+        openDropdown.classList.remove("show");
     });
 });
 
@@ -111,6 +139,8 @@ saveUpdatedEntry = async (event, id) => {
 
 handleUpdate = async (event) => {
 
+    hideAllSections();
+
     const id = event.target.getAttribute("data-id");
 
     const token = localStorage.getItem("token");
@@ -134,12 +164,7 @@ handleUpdate = async (event) => {
         return;
     }
 
-    document.querySelector(".content").style.display = "none";
-    document.querySelector(".entries").style.display = "none";
-
-    const newEntryDiv = document.querySelector(".new-entry");
     newEntryDiv.style.display = "block";
-
     newEntryDiv.innerHTML = `
         <form class="entry-form">
             <h2>Update Entry</h2>
@@ -162,10 +187,8 @@ handleUpdate = async (event) => {
 }
 
 getJournalsList = async () => {
-    // hide the create-new-entry form and clear it
-    newEntryDiv.style.display = "none";
-    newEntryDiv.innerHTML = "";
 
+    hideAllSections();
     document.querySelector(".edit-profile").style.display = "none";
 
     const token = localStorage.getItem("token");
@@ -195,12 +218,9 @@ getJournalsList = async () => {
     
     const data = await response.json();
     journalCache = data;
-    document.querySelector(".content").style.display = "none";
 
     const entriesDiv = document.querySelector(".entries");
     entriesDiv.style.display = "block";
-    entriesDiv.innerHTML = "";
-    document.querySelector(".main").style.display = "block";
     
     data.forEach(entry => {
         const date = entry.date.split("T")[0];
@@ -247,8 +267,8 @@ async function saveEntryHandler(event) {
         return;
     }
 
-    const title = document.querySelector(".entry-input").value;
-    const content = document.querySelector(".entry-textarea").value;
+    const title = newEntryDiv.querySelector(".entry-input").value;
+    const content = newEntryDiv.querySelector(".entry-textarea").value;
 
     const response = await fetch(URL_JOURNAL, {
         method: "POST",
@@ -276,17 +296,14 @@ async function saveEntryHandler(event) {
 }
 
 addNewEntry = async () => {
+
+    hideAllSections();
     const token = localStorage.getItem("token");
     
     if(!token) {
         window.location.href = "index.html";
         return;
     }
-    
-    document.querySelector(".edit-profile").style.display = "none";
-    document.querySelector(".content").style.display = "none";
-    document.querySelector(".entries").style.display = "none";
-    document.querySelector(".main").style.display = "block";
 
     newEntryDiv.style.display = "block";
 
@@ -304,173 +321,153 @@ addNewEntry = async () => {
     </form>
     `;
 
-    const form = document.querySelector(".entry-form");
+    const form = newEntryDiv.querySelector(".entry-form");
     form.addEventListener("submit", saveEntryHandler);
 }
 
 editUserProfile = async () => {
 
-    const token = localStorage.getItem("token");
+    hideAllSections();
 
-    if(!token) {
+    const token = localStorage.getItem("token");
+    if (!token) {
         window.location.href = "index.html";
         return;
     }
 
-    document.querySelector(".content").style.display = "none";
-    document.querySelector(".entries").style.display = "none";
-    document.querySelector(".new-entry").style.display = "none";
-    document.querySelector(".main").style.display = "block";
-
-    const response1 = await fetch(`${URL_USER}`, {
-        method : "GET",
-        headers : {
-            "Authorization" : `Bearer ${token}`
+    // 1️⃣ Fetch current user profile
+    const response = await fetch(URL_USER, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
         }
     });
 
-    const data = await response1.json();
-    const userName = data.username;
+    const data = await response.json();
+    const currentUsername = data.username;
 
+    // 2️⃣ Show Edit Profile Section
     const editProfileDiv = document.querySelector(".edit-profile");
     editProfileDiv.style.display = "block";
 
     editProfileDiv.innerHTML = `
-    <form class="edit-form">
-         <div class="row1">
-            <label>Username</label>
-            <input type="text" class="username-input">
-        </div>
-
-        <div class="row1">
-            <label>Password</label>
-            <a href="#" class="change-pass-link">Change Password</a>
-        </div>
-
-        <div class="password-fields" style="display:none;">
-            <div class="row3">
-                <label>Old Password</label>
-                <input type="password" class="old-password">
+        <form class="edit-form">
+            <div class="row1">
+                <label>Username</label>
+                <input type="text" class="username-input">
             </div>
-            <p class="old-password-error"></p>
-            
-            <div class="row3">
-                <label>New Password</label>
-                <input type="password" class="new-password">
-            </div>
-            
-            <div class="row3">
-                <label>Retype New Password</label>
-                <input type="password" class="retype-password">
-            </div>
-            <p class="password-error"></p>
-        </div>
 
-        <div class="row2">
-            <button type="submit" class="save-btn">Save Changes</button>
-            <button type="button" class="delete">Delete Account</button>
-        </div>
-        <p class="success-message"></p>
-    </form>
-    `
-    const delBtn = document.querySelector(".delete");
-    delBtn.addEventListener("click", async function() {
-        const token = localStorage.getItem("token");
-        if(!token) {
-            window.location.href = "index.html";
-            return;
-        }
-        const confirmed = confirm("Are you sure you want to delete your account? All information will be lost forever!");
-        
-        if(!confirmed) {
-            return;
-        }
-        
-        const response = await fetch(`${URL_USER}`, {
-            method : "DELETE",
-            headers : {
-                "Authorization" : `Bearer ${token}`
-            }
+            <div class="row1">
+                <label>Password</label>
+                <a href="#" class="change-pass-link">Change Password</a>
+            </div>
+
+            <div class="password-fields" style="display:none;">
+                <div class="row3">
+                    <label>Old Password</label>
+                    <input type="password" class="old-password">
+                </div>
+                <p class="old-password-error"></p>
+
+                <div class="row3">
+                    <label>New Password</label>
+                    <input type="password" class="new-password">
+                </div>
+
+                <div class="row3">
+                    <label>Retype New Password</label>
+                    <input type="password" class="retype-password">
+                </div>
+                <p class="password-error"></p>
+            </div>
+
+            <div class="row2">
+                <button type="submit" class="save-btn">Save Changes</button>
+                <button type="button" class="delete">Delete Account</button>
+            </div>
+
+            <p class="success-message"></p>
+        </form>
+    `;
+
+    // Fill username field
+    editProfileDiv.querySelector(".username-input").value = currentUsername;
+
+    // 3️⃣ Toggle password field
+    editProfileDiv.querySelector(".change-pass-link").addEventListener("click", () => {
+        editProfileDiv.querySelector(".password-fields").style.display = "flex";
+    });
+
+    // 4️⃣ Delete Account
+    editProfileDiv.querySelector(".delete").addEventListener("click", async () => {
+        const confirmed = confirm("Are you sure you want to delete your account? This cannot be undone!");
+
+        if (!confirmed) return;
+
+        const response = await fetch(URL_USER, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
         });
 
-        if(response.status === 204) {
+        if (response.status === 204) {
             localStorage.removeItem("token");
             alert("Account Deleted Successfully!");
             window.location.href = "signup.html";
-            return;
-        }
-        else if(response.status === 401 || response.status === 403) {
-            window.location.href = "login.html";
-            return;
         }
     });
 
-    document.querySelector(".username-input").value = userName;
-    const changePassword = document.querySelector(".change-pass-link");
-    changePassword.addEventListener("click", function() {
-        document.querySelector(".password-fields").style.display = "flex";
-    });
-
-    const form = document.querySelector(".edit-form");
-
-    form.addEventListener("submit", async function(event) {
-
+    // 5️⃣ Save Changes
+    editProfileDiv.querySelector(".edit-form").addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        let newPassword = document.querySelector(".new-password").value;
-        let retypedPassword = document.querySelector(".retype-password").value;
+        const newUsername = editProfileDiv.querySelector(".username-input").value;
+        const oldPassword = editProfileDiv.querySelector(".old-password").value;
+        const newPassword = editProfileDiv.querySelector(".new-password").value;
+        const retypePassword = editProfileDiv.querySelector(".retype-password").value;
 
-        let errorP = document.querySelector(".password-error");
+        const passwordError = editProfileDiv.querySelector(".password-error");
+        const oldPassError = editProfileDiv.querySelector(".old-password-error");
 
-        if (newPassword !== retypedPassword) {
-            errorP.style.display = "block";
-            errorP.innerText = "New Password and Retyped Password don't match!";
-            return; // STOP HERE
-        } 
-        else {
-            errorP.style.display = "none";
+        // 6️⃣ Validate new password match
+        if (newPassword !== retypePassword) {
+            passwordError.style.display = "block";
+            passwordError.textContent = "New passwords do not match!";
+            return;
+        } else {
+            passwordError.style.display = "none";
         }
-        let newUsername = document.querySelector(".username-input").value;
-        let oldPassword = document.querySelector(".old-password").value;
-        // After validation passes → send PUT request
-        const response2 = await fetch(`${URL_USER}`, {
-            method : "PUT",
-            headers : {
-                "Content-Type" : "application/json",
-                "Authorization" : `Bearer ${token}`
+
+        // 7️⃣ Send update request
+        const res = await fetch(URL_USER, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
-            body : JSON.stringify({
-                "username" : newUsername,
-                "oldPassword" : oldPassword,
-                "newPassword" : newPassword
+            body: JSON.stringify({
+                username: newUsername,
+                oldPassword: oldPassword,
+                newPassword: newPassword
             })
         });
-        
-        let oldPassError = document.querySelector(".old-password-error");
-        if(response2.status === 400) {
+
+        if (res.status === 400) {
             oldPassError.style.display = "block";
-            oldPassError.innerText = "Password Incorrect";
+            oldPassError.textContent = "Old password is incorrect.";
             return;
         }
-        else {
-            oldPassError.style.display = "none";
-        }
-        if (response2.status === 200) {
-            let successMsg = document.querySelector(".success-message");
-            successMsg.innerText = "Profile updated successfully!";
-            successMsg.style.display = "block";
 
-            // Hide automatically after 3 seconds
-            setTimeout(function() {
-                successMsg.style.display = "none";
-            }, 3000);
+        // 8️⃣ Success
+        const msg = editProfileDiv.querySelector(".success-message");
+        msg.textContent = "Profile updated successfully!";
+        msg.style.display = "block";
 
-            setTimeout(function() {
-                window.location.href = "index.html";
-            }, 3000)
-        }
+        setTimeout(() => {
+            msg.style.display = "none";
+            window.location.href = "index.html";
+        }, 3000);
     });
-}
+};
 
 myJournals.addEventListener("click", getJournalsList);
 newEntry.addEventListener("click", addNewEntry);

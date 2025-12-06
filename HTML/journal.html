@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div class="header show-header">
+    <div class="header" style="display:none">
         <div class="navbar">
             <div class="nav-logo">
                 <h2>JournalApp</h2>
@@ -22,14 +22,14 @@
                 <ul>
                     <li><a href="journal.html">HOME</a></li>
                     <li class="dropdown-parent">
-                        <a href="#">PROFILE</a>
+                        <a href="#" class="dropdown-toggle">PROFILE</a>
                         <div class="dropdown">
                             <p class="edit-profile-btn">Edit Profile</p>
                             <p class="logout-btn">Logout</p>
                         </div>
                     </li>
                     <li class="dropdown-parent">
-                        <a href="#">SERVICES</a>
+                        <a href="#" class="dropdown-toggle">SERVICES</a>
                         <div class="dropdown">
                             <p class="my-journals-btn">My Journals</p>
                             <p class="new-entry-btn">Create New Entry</p>
@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    <div class="main show-main">
+    <div class="main" style="display:none">
         <div class="content">
             <h1>Welcome to Your Journal</h1>
             <p id="status">You can check all your entries here, update them and even create new entries!</p>
