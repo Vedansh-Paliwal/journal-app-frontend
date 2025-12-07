@@ -1,8 +1,9 @@
-# 📒 Journal App — Frontend  
-A simple and clean frontend interface for a personal journal application.  
-Users can sign up, log in, create journal entries, update them, delete them, and manage their profile.
+# 📒 Journal App — Responsive Frontend (2025 Update)
 
-This frontend communicates with a Spring Boot backend using JWT authentication.
+A fully responsive and user-friendly frontend for a personal journal application.  
+Supports authentication, journal management, and profile editing — all powered by a Spring Boot backend using JWT security.
+
+This version includes a complete **responsive redesign**, supporting both **desktop dropdown navigation** and **mobile hamburger navigation**.
 
 ---
 
@@ -11,119 +12,158 @@ This frontend communicates with a Spring Boot backend using JWT authentication.
 ### 🔐 Authentication
 - User Signup  
 - User Login  
-- JWT stored in `localStorage`  
-- Auto-redirect to login if token is missing  
-
-### 📘 Journal Management
-- Create new journal entries  
-- View all entries  
-- Update existing entries  
-- Delete entries  
-- Entries cached locally for faster update UI  
-
-### 👤 User Profile
-- Update username  
-- Change password  
-- Delete account  
-- Password validation on frontend
-
-### 🎨 UI/UX
-- Fully responsive layout  
-- Clean navbar with dropdown menus  
-- Dynamic DOM rendering (no page reloads)  
-- Error + success message handling
+- JWT saved in `localStorage`  
+- Auto-protects private pages (redirects to login if token is missing)
 
 ---
 
-## 🏗️ Tech Stack
+## 📘 Journal Management
+- View all journal entries  
+- Create new entries  
+- Update entries  
+- Delete entries  
+- Clean, card-based UI  
+- Fully responsive layout  
+- Dynamic DOM rendering (no page reloads)
+
+---
+
+## 👤 User Profile
+- Edit username  
+- Change password (toggle section appears only when requested)  
+- Delete account  
+- Frontend validation for:
+  - Password mismatch  
+  - Incorrect old password  
+- Success/error feedback messages
+
+---
+
+## 📱💻 Responsive UI/UX
+
+### **Mobile View**
+- Hamburger menu  
+- Full-screen slide-in navigation  
+- Touch-friendly UI  
+- Forms stretch to 100% width for readability  
+
+### **Desktop View**
+- Clean navbar with dropdown menus  
+- Hover-activated dropdowns  
+- Journals displayed in wider cards  
+- Forms centered with max-width  
+- Buttons repositioned (bottom-right for entries)
+
+---
+
+## 🧱 Tech Stack
 
 | Layer | Technology |
 |-------|-------------|
-| **Frontend** | HTML5, CSS3, JavaScript (Vanilla JS) |
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript |
 | **Fonts** | Google Fonts (Poppins, Dancing Script) |
-| **Auth** | JWT from backend |
-| **Communication** | Fetch API (GET/POST/PUT/DELETE) |
+| **Icons** | Font Awesome |
+| **Auth** | JWT (stored in localStorage) |
+| **Communication** | Fetch API |
 
 ---
 
 ## 📁 Folder Structure
 
+```
 Journal App/
 │
 ├── HTML/
-│ ├── index.html
-│ ├── signup.html
-│ └── journal.html
+│   ├── index.html
+│   ├── signup.html
+│   └── journal.html
 │
 ├── CSS/
-│ ├── loginStyle.css
-│ ├── signupStyle.css
-│ ├── journalStyle.css
-│ └── journalStyleDynamic.css
+│   ├── loginStyle.css
+│   ├── signupStyle.css
+│   ├── journalStyle.css
+│   └── journalStyleDynamic.css
 │
 └── JS/
-├── login.js
-├── signup.js
-└── journal.js
-
+    ├── login.js
+    ├── signup.js
+    └── journal.js
+```
 
 ---
 
-## 🔌 Backend API (Required)
+## 🔌 Backend API Dependency
 
 This frontend expects a backend running at:
 
+```
 http://localhost:8080
+```
 
 Endpoints used:
 
-POST /public/login
+### **Authentication**
+```
 POST /public/signup
-GET /journal
-POST /journal
-PUT /journal/id/{id}
+POST /public/login
+```
+
+### **Journal**
+```
+GET    /journal
+POST   /journal
+PUT    /journal/id/{id}
 DELETE /journal/id/{id}
+```
 
-GET /user
-PUT /user
+### **User**
+```
+GET    /user
+PUT    /user
 DELETE /user
+```
 
-Make sure CORS allows:
+CORS must allow:
 
+```
 http://localhost:5500
+```
+
+(or your Netlify domain after deployment)
 
 ---
 
 ## ▶️ Running the Frontend
 
-No installations needed.
-
-### Using Live Server (VS Code)
+### **Using VS Code Live Server**
 1. Install Live Server extension  
-2. Right-click **index.html**  
-3. Click **Open with Live Server**
+2. Right-click `index.html`  
+3. Choose **Open with Live Server**  
+
+Or deploy using:
+- Netlify  
+- GitHub Pages  
+- Vercel  
 
 ---
 
 ## 🔒 Security Notes
 - No secrets are stored on the frontend  
-- JWT is stored in `localStorage`  
-- Sensitive logic is enforced by backend (Spring Security + JWT)
+- JWT is kept in `localStorage`  
+- Sensitive operations validated by backend  
+- Auto-redirect prevents unauthorized access to journal.html  
 
 ---
 
-## 📌 Future Improvements
-- Client-side form validation enhancements  
-- Real-time username availability check  
-- Better error UI feedback  
-- Dark mode (optional)  
-- Deploy frontend + backend online
+## 🚀 Future Improvements
+- Better UI animations (delete/update)  
+- Improved empty-state visuals  
+- Dark mode  
+- Backend deployment for full-stack online hosting  
+- Real-time username validation  
 
 ---
 
 ## 📄 License
-This project is open-source. You can modify and use it freely for learning purposes.
+This project is open-source. You may modify and use it for learning or personal projects.
 
----
-
-If you like this frontend and you want the backend README as well, check the separate backend repository.
