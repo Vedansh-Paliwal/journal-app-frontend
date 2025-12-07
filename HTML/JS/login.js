@@ -19,11 +19,20 @@ const submitData = async (event) => {
     username = username.trim();
     password = password.trim();
 
+    if((username === "" || username === null) && (password === "" || password === null)) {
+        usernameError.textContent = "Username cannot be empty!";
+        usernameError.style.display = "block";
+        passwordError.textContent = "Password cannot be empty!";
+        passwordError.style.display = "block";
+        return;
+    }
     if(username === "" || username === null) {
+        usernameError.textContent = "Username cannot be empty!";
         usernameError.style.display = "block";
         return;
     }
     if(password === "" || password === null) {
+        passwordError.textContent = "Password cannot be empty!";
         passwordError.style.display = "block";
         return;
     }

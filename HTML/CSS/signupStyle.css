@@ -12,53 +12,69 @@
     justify-content: center;
     align-items: center;
 }
+form {
+    width: 100%;
+}
+/* <---------------------------------------------------------- LOGIN BOX CSS -------------------------------------------------------> */
 .login-box {
-    height: 60%;
-    width: 25%;
+    width: 90%;
+    max-width: 450px;
+    padding: 20px;
     background-color: white;
     border-radius: 10px;
-    padding: 30px 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
 }
-.login-box form {
-    height: 80%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+@media screen and (min-width: 768px) {
+    .login-box {
+        padding: 40px;
+    }
 }
-.login-box form .form-group {
-    width: 100%;
+.login-box h2 {
+    margin-bottom: 18px;
 }
-.login-box form .form-group input {
+.login-box form input {
     width: 100%;
-    border-radius: 3px;
-    border: 1px solid gray;
-    padding: 7.5px 15px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    box-shadow: 1px 2px 2px rgba(0,0,0,0.1);
+    padding: 10px 14px;
 }
-.login-box form .form-actions {
-    width: 100%;
+.login-box form input:focus {
+    border: 1px solid #888;
+    box-shadow: 0 0 4px rgba(0,0,0,0.15); 
+    outline: none; /* remove ugly browser outline */
 }
 .login-box form .form-actions button {
     width: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
     border: none;
     color: white;
     background-color: #007bff;
     padding: 10px;
     cursor: pointer;
 }
-.login-box p {
+.login-box .new-account {
     font-size: 0.75rem;
 }
 .login-box .new-account a {
     text-decoration: none;
 }
+/* <---------------------------------------------------------- LOGIN BOX CSS -------------------------------------------------------> */
+
+label {
+    display: block;
+    margin-bottom: 4px;
+}
+.form-group {
+    margin-bottom: 16px;
+}
+.form-actions {
+    margin-top: 20px;
+}
 .error-message {
+    font-size: 0.75rem;
     color: red;
     display: none;
 }

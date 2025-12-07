@@ -1,170 +1,169 @@
 let journalCache = [];
-const parents = document.querySelectorAll(".dropdown-parent");
-let myJournals = document.querySelector(".my-journals-btn");
-let newEntry = document.querySelector(".new-entry-btn");
-let newEntryDiv = document.querySelector(".new-entry");
-let editProfile = document.querySelector(".edit-profile-btn");
+/***********************
+ *     API ENDPOINTS   *
+ ***********************/
 
-URL_JOURNAL = "http://localhost:8080/journal";
-URL_USER = "http://localhost:8080/user";
+const URL_JOURNAL = "http://localhost:8080/journal";
+const URL_USER    = "http://localhost:8080/user";
 
+
+/***********************
+ *   STATIC SELECTORS  *
+ ***********************/
+
+// --- Navbar ---
+const hamburgerBtn = document.querySelector(".hamburger-btn");
+const mobileMenu   = document.querySelector(".mobile-menu");
+const navLogo      = document.querySelector(".nav-logo h2");
+const homePage = document.querySelector(".home-btn");
+
+
+// --- Desktop dropdown parents (PROFILE, SERVICES) ---
+const dropdownParents = document.querySelectorAll(".dropdown-parent");
+
+// --- Buttons that exist in BOTH desktop nav + mobile menu ---
+const myJournalsBtns   = document.querySelectorAll(".my-journals-btn");
+const newEntryBtns      = document.querySelectorAll(".new-entry-btn");
+const editProfileBtns   = document.querySelectorAll(".edit-profile-btn");
+const logoutBtns        = document.querySelectorAll(".logout-btn");
+
+// --- Main sections (always exist in HTML) ---
+const contentSection     = document.querySelector(".content");
+const entriesSection     = document.querySelector(".entries");
+const newEntrySection    = document.querySelector(".new-entry");
+const editProfileSection = document.querySelector(".edit-profile");
+const mainWrapper        = document.querySelector(".main");
+
+
+/***********************
+ *  HIDE ALL UI SECTIONS
+ ***********************/
 function hideAllSections() {
-    // Hide the four main UI sections
+
+    // Hide all main sections
     document.querySelector(".content").style.display = "none";
     document.querySelector(".entries").style.display = "none";
     document.querySelector(".new-entry").style.display = "none";
     document.querySelector(".edit-profile").style.display = "none";
 
-    // Clear dynamic content so old UI does not remain visible
+    // Clear dynamic content
     document.querySelector(".entries").innerHTML = "";
     document.querySelector(".new-entry").innerHTML = "";
     document.querySelector(".edit-profile").innerHTML = "";
 
-    // The main wrapper stays visible after login
-    document.querySelector(".main").style.display = "block";
+    // Reset homepage content (ONLY if you want Home to show default text again)
+    const contentDiv = document.querySelector(".content");
+    contentDiv.innerHTML = `
+        <h1>Welcome to Your Journal</h1>
+        <p id="status">You can check all your entries here...</p>
+    `;
 }
 
-window.onload = () => { // = “Run this only after the HTML is fully loaded.”, Not using window.onload = Sometimes JS runs before HTML exists → errors. You can only select an element in JS if that element already exists in the HTML at the time JS runs.
-    let tokenValue = localStorage.getItem("token");
-    const header = document.querySelector(".header");
-    const main = document.querySelector(".main");
-    let logoutBtn = document.querySelector(".logout-btn");
+function openMobileMenu(event) {
+    event.stopPropagation();
+    mobileMenu.classList.add("show");
+    document.body.style.overflow = "hidden"; 
+}
 
-    logoutBtn.addEventListener("click", function(){
-        localStorage.removeItem("token");
-        window.location.href = "index.html";
+function closeMobileMenu() {
+    mobileMenu.classList.remove("show");
+    document.body.style.overflow = "auto";
+}
+
+function goHome() {
+    hideAllSections();
+    contentSection.style.display = "block";   // show welcome text
+}
+
+function attachGlobalEventListeners() {
+    // Hamburger open & close
+    hamburgerBtn.addEventListener("click", openMobileMenu);
+    window.addEventListener("click", closeMobileMenu);
+
+    // Prevent menu clicks from closing it
+    mobileMenu.addEventListener("click", (event) => {
+        event.stopPropagation();
     });
 
-    if (!tokenValue) {
-        window.location.href = "index.html";
-        return;
-    }
-    header.style.display = "block";
-    main.style.display = "flex";
-};
+    // HOME button (logo)
+    homePage.addEventListener("click", goHome);
 
-// Open/close dropdown when clicking on parent
-parents.forEach(parent => {
-    parent.addEventListener("click", function (event) {
-        event.stopPropagation(); // stopPropagation() prevents a click on dropdown from also triggering the “click outside” logic.
+    // Nav Logo
+    navLogo.addEventListener("click", goHome);
 
-        const dropdown = parent.querySelector(".dropdown");
-
-        // Close any other open dropdowns
-        document.querySelectorAll(".dropdown.show").forEach(openDropdown => {
-            if (openDropdown !== dropdown) openDropdown.classList.remove("show");
-        });
-
-        // Toggle this dropdown
-        dropdown.classList.toggle("show"); // If class exists → remove it  |  If class doesn’t exist → add it
+    // Attach handlers to BOTH mobile + desktop menu buttons
+    document.querySelectorAll(".my-journals-btn").forEach(el => {
+        el.addEventListener("click", getJournalsList);
     });
-});
 
-// Close dropdowns when clicking anywhere else
-window.addEventListener("click", () => {
-    document.querySelectorAll(".dropdown.show").forEach(openDropdown => {
-        openDropdown.classList.remove("show");
+    document.querySelectorAll(".new-entry-btn").forEach(el => {
+        el.addEventListener("click", addNewEntry);
     });
-});
 
-handleDelete = async (event) => {
+    document.querySelectorAll(".edit-profile-btn").forEach(el => {
+        el.addEventListener("click", editUserProfile);
+    });
 
+    document.querySelectorAll(".logout-btn").forEach(el => {
+        el.addEventListener("click", logoutActiveUser);
+    });
+}
+
+function logoutActiveUser() {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+}
+
+async function handleDelete(event) {
     const id = event.target.getAttribute("data-id");
 
-    const confirmed = confirm("Are you sure you want to delete this journal entry?");
-
-    if(!confirmed) {
-        return;
-    }
+    const confirmDelete = confirm("Are you sure you want to delete this entry?");
+    if (!confirmDelete) return;
 
     const token = localStorage.getItem("token");
-
-    if(!token) {
+    if (!token) {
         window.location.href = "index.html";
         return;
     }
 
     const response = await fetch(`${URL_JOURNAL}/id/${id}`, {
-        method : "DELETE",
-        headers : {
-            "Authorization" : `Bearer ${token}`
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
         }
     });
 
-    if(response.status === 204) {
+    if (response.status === 204) {
         alert("Entry deleted successfully!");
         getJournalsList();
-    }
-    else {
-        alert("Failed to delete entry!");
-    }
-}
-
-saveUpdatedEntry = async (event, id) => {
-
-    event.preventDefault();
-
-    const token = localStorage.getItem("token");
-
-    if(!token) {
-        window.location.href = "index.html";
         return;
     }
 
-    let newTitle = document.querySelector(".entry-input").value;
-    let newContent = document.querySelector(".entry-textarea").value;
-
-    const response = await fetch(`${URL_JOURNAL}/id/${id}`, {
-        method : "PUT",
-        headers : {
-            "Content-Type" : "application/json",
-            "Authorization" : `Bearer ${token}`
-        },
-        body : JSON.stringify({
-            "title" : newTitle,
-            "content" : newContent
-        })
-    });
-
-    if(response.status === 404) {
-        alert("Entry not found!");
-        return;
-    }
-
-    if(response.status === 200) {
-        alert("Entry updated successfully!");
-        getJournalsList();
-    }
+    alert("Failed to delete entry.");
 }
 
-handleUpdate = async (event) => {
-
+async function handleUpdate(event) {
     hideAllSections();
 
     const id = event.target.getAttribute("data-id");
-
     const token = localStorage.getItem("token");
 
-    if(!token) {
+    if (!token) {
         window.location.href = "index.html";
         return;
     }
 
-    let entry = null;
+    // Find entry in the cached list
+    let entry = journalCache.find(e => e.id == id);
 
-    for(let i = 0;i < journalCache.length; i++) {
-        if(journalCache[i].id === id) {
-            entry = journalCache[i];
-            break;
-        }
-    }
-
-    if(!entry) {
+    if (!entry) {
         alert("Entry not found!");
         return;
     }
 
+    const newEntryDiv = document.querySelector(".new-entry");
     newEntryDiv.style.display = "block";
+
     newEntryDiv.innerHTML = `
         <form class="entry-form">
             <h2>Update Entry</h2>
@@ -175,91 +174,84 @@ handleUpdate = async (event) => {
             <label for="content">Content</label>
             <textarea id="content" class="entry-textarea" required></textarea>
 
-            <button type="submit" class="entry-update-btn">Update Entry</button>
+            <button type="submit" class="entry-submit-btn">Update Entry</button>
         </form>
     `;
 
-    document.querySelector(".entry-input").value = entry.title;
-    document.querySelector(".entry-textarea").value = entry.content;
+    // Fill existing values
+    newEntryDiv.querySelector(".entry-input").value = entry.title;
+    newEntryDiv.querySelector(".entry-textarea").value = entry.content;
 
-    const form = document.querySelector(".entry-form");
+    // Attach update handler
+    const form = newEntryDiv.querySelector(".entry-form");
     form.addEventListener("submit", (e) => saveUpdatedEntry(e, id));
 }
 
-getJournalsList = async () => {
-
+async function getJournalsList() {
     hideAllSections();
-    document.querySelector(".edit-profile").style.display = "none";
 
     const token = localStorage.getItem("token");
-
-    if(!token) {
+    if (!token) {
         window.location.href = "index.html";
         return;
     }
+
+    // --- FETCH USER JOURNALS ---
     const response = await fetch(URL_JOURNAL, {
-        method : "GET",
-        headers : {
-            "Authorization" : `Bearer ${token}`
-        }
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` }
     });
 
-    if(response.status === 401 || response.status === 403 || response.status === 500) {
+    // Handle invalid token
+    if ([401, 403, 500].includes(response.status)) {
         localStorage.removeItem("token");
         window.location.href = "index.html";
         return;
     }
+
     if(response.status === 204) {
         document.querySelector(".content").style.display = "none";
         const entriesDiv = document.querySelector(".entries");
         entriesDiv.innerHTML = "<p>No journal entries available!</p>";
         return;
     }
-    
+
     const data = await response.json();
     journalCache = data;
 
     const entriesDiv = document.querySelector(".entries");
     entriesDiv.style.display = "block";
-    
+
+    // Case: No entries
+    if (response.status === 204) {
+        entriesDiv.innerHTML = "<p>No journal entries available!</p>";
+        return;
+    }
+
+
     data.forEach(entry => {
         const date = entry.date.split("T")[0];
-        const content = entry.content;
-        const title = entry.title;
-        
+
         const div = document.createElement("div");
         div.classList.add("entry");
-        
-        const h3 = document.createElement("h3");
-        h3.textContent = `${title} (${date})`;
-        
-        const p = document.createElement("p");
-        p.textContent = content;
 
-        const deleteBtn = document.createElement("button"); 
-        deleteBtn.textContent = "Delete"; 
-        deleteBtn.classList.add("delete-btn"); 
-        deleteBtn.setAttribute("data-id", entry.id);
-
-        const updateBtn = document.createElement("button");
-        updateBtn.textContent = "Update";
-        updateBtn.classList.add("update-btn");
-        updateBtn.setAttribute("data-id", entry.id);
-        
-        div.appendChild(h3);
-        div.appendChild(p);
-        div.appendChild(deleteBtn);
-        div.appendChild(updateBtn);
+        div.innerHTML = `
+            <h3>${entry.title} (${date})</h3>
+            <p>${entry.content}</p>
+            <button class="delete-btn" data-id="${entry.id}">Delete</button>
+            <button class="update-btn" data-id="${entry.id}">Update</button>
+        `;
 
         entriesDiv.appendChild(div);
 
-        deleteBtn.addEventListener("click", handleDelete);
-        updateBtn.addEventListener("click", handleUpdate);
-    })
+        // Attach handlers to newly created buttons
+        div.querySelector(".delete-btn").addEventListener("click", handleDelete);
+        div.querySelector(".update-btn").addEventListener("click", handleUpdate);
+    });
 }
 
 async function saveEntryHandler(event) {
-    event.preventDefault(); // prevent page refresh
+    event.preventDefault();  // prevent refresh
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -267,66 +259,113 @@ async function saveEntryHandler(event) {
         return;
     }
 
-    const title = newEntryDiv.querySelector(".entry-input").value;
-    const content = newEntryDiv.querySelector(".entry-textarea").value;
+    const title = document.querySelector(".entry-input").value.trim();
+    const content = document.querySelector(".entry-textarea").value.trim();
+
+    if (!title || !content) {
+        alert("Title and content cannot be empty!");
+        return;
+    }
 
     const response = await fetch(URL_JOURNAL, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json", // This header tells Spring Boot: “The body I’m sending you is JSON. Please parse it as JSON.”
+            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({
-            title: title,
-            content: content
-        })
+        body: JSON.stringify({ title, content })
     });
-    if (response.status === 401 || response.status === 403 || response.status === 500) {
+
+    if ([401, 403, 500].includes(response.status)) {
         localStorage.removeItem("token");
         window.location.href = "index.html";
         return;
     }
+
     if (!response.ok) {
-        alert("Something went wrong while creating the entry.");
+        alert("Failed to create entry.");
         return;
     }
 
-    // SUCCESS → Load My Journals page again
+    // success → reload journals
     getJournalsList();
 }
 
-addNewEntry = async () => {
-
+async function addNewEntry() {
     hideAllSections();
+
     const token = localStorage.getItem("token");
-    
-    if(!token) {
+    if (!token) {
         window.location.href = "index.html";
         return;
     }
 
+    const newEntryDiv = document.querySelector(".new-entry");
     newEntryDiv.style.display = "block";
 
     newEntryDiv.innerHTML = `
-    <form class="entry-form">
-        <h2>Create New Entry</h2>
+        <form class="entry-form">
+            <h2>Create New Entry</h2>
 
-        <label for="title">Title</label>
-        <input type="text" id="title" class="entry-input" placeholder="Enter title" required>
+            <label for="title">Title</label>
+            <input type="text" id="title" class="entry-input" required>
 
-        <label for="content">Content</label>
-        <textarea id="content" class="entry-textarea" placeholder="Write your journal entry..." required></textarea>
+            <label for="content">Content</label>
+            <textarea id="content" class="entry-textarea" required></textarea>
 
-        <button type="submit" class="entry-submit-btn">Save Entry</button>
-    </form>
+            <button type="submit" class="entry-submit-btn">Save Entry</button>
+        </form>
     `;
 
     const form = newEntryDiv.querySelector(".entry-form");
     form.addEventListener("submit", saveEntryHandler);
 }
 
-editUserProfile = async () => {
+async function saveUpdatedEntry(event, id) {
+    event.preventDefault();
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    const newTitle = document.querySelector(".entry-input").value.trim();
+    const newContent = document.querySelector(".entry-textarea").value.trim();
+
+    if (!newTitle || !newContent) {
+        alert("Title and content cannot be empty!");
+        return;
+    }
+
+    const response = await fetch(`${URL_JOURNAL}/id/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            title: newTitle,
+            content: newContent
+        })
+    });
+
+    if (response.status === 404) {
+        alert("Entry not found!");
+        return;
+    }
+
+    if (!response.ok) {
+        alert("Failed to update entry.");
+        return;
+    }
+
+    alert("Entry updated successfully!");
+    getJournalsList();
+}
+
+async function editUserProfile() {
     hideAllSections();
 
     const token = localStorage.getItem("token");
@@ -335,18 +374,16 @@ editUserProfile = async () => {
         return;
     }
 
-    // 1️⃣ Fetch current user profile
+    // 1️⃣ Fetch current user data
     const response = await fetch(URL_USER, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
+        headers: { "Authorization": `Bearer ${token}` }
     });
 
     const data = await response.json();
     const currentUsername = data.username;
 
-    // 2️⃣ Show Edit Profile Section
+    // 2️⃣ Show and build the form
     const editProfileDiv = document.querySelector(".edit-profile");
     editProfileDiv.style.display = "block";
 
@@ -362,7 +399,7 @@ editUserProfile = async () => {
                 <a href="#" class="change-pass-link">Change Password</a>
             </div>
 
-            <div class="password-fields" style="display:none;">
+            <div class="password-fields">
                 <div class="row3">
                     <label>Old Password</label>
                     <input type="password" class="old-password">
@@ -390,85 +427,110 @@ editUserProfile = async () => {
         </form>
     `;
 
-    // Fill username field
+    // 3️⃣ Fill username
     editProfileDiv.querySelector(".username-input").value = currentUsername;
 
-    // 3️⃣ Toggle password field
-    editProfileDiv.querySelector(".change-pass-link").addEventListener("click", () => {
-        editProfileDiv.querySelector(".password-fields").style.display = "flex";
+    // 4️⃣ Toggle password field visibility
+    editProfileDiv.querySelector(".change-pass-link").addEventListener("click", (e) => {
+        e.preventDefault();
+        editProfileDiv.querySelector(".password-fields").classList.add("show");
     });
 
-    // 4️⃣ Delete Account
-    editProfileDiv.querySelector(".delete").addEventListener("click", async () => {
-        const confirmed = confirm("Are you sure you want to delete your account? This cannot be undone!");
+    // 5️⃣ Hook form submit → save profile function (next function)
+    editProfileDiv.querySelector(".edit-form").addEventListener("submit", saveUserProfile);
 
-        if (!confirmed) return;
+    // 6️⃣ Hook delete account button (next function)
+    editProfileDiv.querySelector(".delete").addEventListener("click", deleteUserAccount);
+}
 
-        const response = await fetch(URL_USER, {
-            method: "DELETE",
-            headers: { "Authorization": `Bearer ${token}` }
-        });
+async function saveUserProfile(event) {
+    event.preventDefault();
 
-        if (response.status === 204) {
-            localStorage.removeItem("token");
-            alert("Account Deleted Successfully!");
-            window.location.href = "signup.html";
-        }
-    });
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+        return;
+    }
 
-    // 5️⃣ Save Changes
-    editProfileDiv.querySelector(".edit-form").addEventListener("submit", async (event) => {
-        event.preventDefault();
+    const editProfileDiv = document.querySelector(".edit-profile");
 
-        const newUsername = editProfileDiv.querySelector(".username-input").value;
-        const oldPassword = editProfileDiv.querySelector(".old-password").value;
-        const newPassword = editProfileDiv.querySelector(".new-password").value;
-        const retypePassword = editProfileDiv.querySelector(".retype-password").value;
+    const newUsername = editProfileDiv.querySelector(".username-input").value;
+    const oldPassword = editProfileDiv.querySelector(".old-password").value;
+    const newPassword = editProfileDiv.querySelector(".new-password").value;
+    const retypePassword = editProfileDiv.querySelector(".retype-password").value;
 
-        const passwordError = editProfileDiv.querySelector(".password-error");
-        const oldPassError = editProfileDiv.querySelector(".old-password-error");
+    const oldPassError = editProfileDiv.querySelector(".old-password-error");
+    const newPassError = editProfileDiv.querySelector(".password-error");
+    const msg = editProfileDiv.querySelector(".success-message");
 
-        // 6️⃣ Validate new password match
+    // 1️⃣ Validate new password match
+    if (newPassword || retypePassword) {  
         if (newPassword !== retypePassword) {
-            passwordError.style.display = "block";
-            passwordError.textContent = "New passwords do not match!";
+            newPassError.style.display = "block";
+            newPassError.textContent = "New passwords do not match!";
             return;
         } else {
-            passwordError.style.display = "none";
+            newPassError.style.display = "none";
         }
+    }
 
-        // 7️⃣ Send update request
-        const res = await fetch(URL_USER, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                username: newUsername,
-                oldPassword: oldPassword,
-                newPassword: newPassword
-            })
-        });
+    // 2️⃣ Build request body (only send fields user is updating)
+    const body = { username: newUsername };
+    if (oldPassword) body.oldPassword = oldPassword;
+    if (newPassword) body.newPassword = newPassword;
 
-        if (res.status === 400) {
-            oldPassError.style.display = "block";
-            oldPassError.textContent = "Old password is incorrect.";
-            return;
-        }
-
-        // 8️⃣ Success
-        const msg = editProfileDiv.querySelector(".success-message");
-        msg.textContent = "Profile updated successfully!";
-        msg.style.display = "block";
-
-        setTimeout(() => {
-            msg.style.display = "none";
-            window.location.href = "index.html";
-        }, 3000);
+    // 3️⃣ Send update request
+    const response = await fetch(URL_USER, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
     });
-};
 
-myJournals.addEventListener("click", getJournalsList);
-newEntry.addEventListener("click", addNewEntry);
-editProfile.addEventListener("click", editUserProfile);
+    // 4️⃣ Old password wrong?
+    if (response.status === 400) {
+        oldPassError.style.display = "block";
+        oldPassError.textContent = "Old password is incorrect.";
+        return;
+    }
+
+    // 5️⃣ Success
+    msg.textContent = "Profile updated successfully!";
+    msg.style.display = "block";
+
+    setTimeout(() => {
+        msg.style.display = "none";
+        window.location.href = "index.html";
+    }, 2000);
+}
+
+async function deleteUserAccount() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    const confirmed = confirm(
+        "Are you sure you want to delete your account? This cannot be undone!"
+    );
+
+    if (!confirmed) return;
+
+    const response = await fetch(URL_USER, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (response.status === 204) {
+        localStorage.removeItem("token");
+        alert("Account deleted successfully!");
+        window.location.href = "signup.html";
+    } else {
+        alert("Failed to delete account.");
+    }
+}
+
+attachGlobalEventListeners();

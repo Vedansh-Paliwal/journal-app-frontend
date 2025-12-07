@@ -1,201 +1,282 @@
 .entries {
-    padding: 10px 20px;
-}
-.entry {
-    position: relative;
-    background-color: white;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-.new-entry {
-    width: 100%;
-    padding-top: 40px;
+    padding: 16px;
     display: none;
 }
-.entry-form {
-    background-color: white;
-    width: 40%;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin: auto;
-}
-.entry-form h2 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-.entry-input, .entry-textarea {
+.entry {
     width: 100%;
-    padding: 10px 15px;
-    border-radius: 6px;
-    border: 1px solid gray;
-    font-size: 1rem;
+    background-color: white;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 15px;
 }
-.entry-textarea {
-    height: 150px;
-    resize: vertical;
+@media (min-width: 768px) {
+    .entry {
+        padding: 20px;
+    }
 }
-.entry-submit-btn {
-    padding: 12px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
+@media (min-width: 1024px) {
+    .entry {
+        padding: 24px;
+    }
 }
-.entry-submit-btn:hover {
-    background-color: #0056b3;
+.entry h3 {
+    font-size: 1.125rem;
 }
-.delete-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+@media screen and (min-width: 768px) {
+    .entry h3 {
+        font-size: 1.25rem;
+    }
+}
+@media screen and (min-width: 1024px) {
+    .entry h3 {
+        font-size: 1.375rem;
+    }
+}
+.entry p {
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+@media screen and (min-width: 768px) {
+    .entry p {
+        font-size: 1rem;
+    }
+}
+@media screen and (min-width: 1024px) {
+    .entry p {
+        font-size: 1.0625rem;
+    }
+}
+.update-btn, .delete-btn {
+    position: static;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    margin-right: 10px;
     font-weight: 500;
+    color: white;
     border: none;
     border-radius: 5px;
-    color: white;
-    background-color: red;
-    padding: 6px 12px;
     cursor: pointer;
+    padding: 6px 10px;
+}
+@media screen and (min-width: 768px) {
+    .update-btn, .delete-btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+}
+@media screen and (min-width: 1024px) {
+    .update-btn, .delete-btn {
+        font-size: 1rem;
+        padding: 10px 14px;
+    }
+}
+.delete-btn {
+    background-color: red;
 }
 .delete-btn:hover {
     background-color: rgb(198, 0, 0);
 }
 .update-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 100px;
-    font-weight: 500;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    background-color: #04AA6D;
-    padding: 6px 12px;
-    cursor: pointer;
+    background-color: #04AA6D ;
 }
 .update-btn:hover {
     background-color: #048253;
 }
-.entry-update-btn {
-    padding: 12px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-.entry-update-btn:hover {
-    background-color: #0056b3;
+@media screen and (min-width: 1024px) {
+    .entries {
+        flex: 1;
+    }
+    .entry {
+        position: relative;
+    }
+    .update-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 100px;
+        width: auto;
+        background-color: #04AA6D;
+        padding: 6px 12px;
+        margin-top: 0;
+    }
+    .delete-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 10px;
+        width: auto;
+        background-color: red;
+        padding: 6px 12px;
+        margin-top: 0;
+    }
 }
 .edit-profile {
+    padding: 20px;
+    flex: 1;
     display: none;
-    width: 30%;
-    padding-left: 20px;
-    padding-top: 20px;
 }
-.edit-form {
+.edit-profile .edit-form {
+    width: 100%;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
+    gap: 16px;
     background-color: rgb(215, 228, 255);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
-.row1 {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 20px;
-    margin-bottom: 10px;
+@media (min-width: 1024px) {
+    .edit-profile .edit-form {
+        max-width: 600px;   /* clean, readable width */     
+        margin: 0 auto;/* center horizontally */
+    }
 }
-.row2 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
+.edit-form label {
+    font-size: 0.9rem;
+    font-weight: 500;
 }
-.row3 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.password-fields .password-error {
-    color: red;
-    display: none;
-    font-size: 0.75rem;
-}
-.password-fields .old-password-error {
-    color: red;
-    display: none;
-    font-size: 0.75rem;
-}
-.row3 input {
-    padding: 5px 15px;
-    border-radius: 5px;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-.username-input {
-    padding: 5px 15px;
-    border-radius: 5px;
+.edit-form input {
     width: 100%;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 10px 14px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.edit-form input:focus {
+    border-color: #888;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
 }
 .change-pass-link {
-    color: blue;
+    font-size: 0.85rem;
+    color: #007bff;
     text-decoration: underline;
     cursor: pointer;
-    font-size: 0.75rem;
 }
 .change-pass-link:hover {
     color: #0056b3;
 }
-.password-fields {
+.row1, .row3 {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 6px;
 }
-.password-fields label {
-    font-size: 0.85rem;
+.password-error,
+.old-password-error {
+    font-size: 0.75rem;
+    color: red;
+    display: none;
 }
-.save-btn {
-    width: 35%;
-    padding: 5px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
+.password-fields {
+    display: none;
+}
+.password-fields.show {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+.save-btn,
+.delete {
     font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 5px;
+    cursor: pointer;
+}
+/* Blue save button */
+.save-btn {
+    background-color: #007bff;
+    color: white;
 }
 .save-btn:hover {
-    background-color: #0066d3;
+    background-color: #0068d6;
 }
+/* Red delete button */
 .delete {
-    width: 35%;
-    padding: 5px;
     background-color: red;
-    border: none;
     color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
 }
 .delete:hover {
     background-color: rgb(198, 0, 0);
 }
+/* Button row layout */
+.row2 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
 .success-message {
     color: green;
-    display: none;
     font-size: 0.85rem;
     margin-top: 10px;
+    display: none;
+}
+@media (min-width: 1024px) {
+    .row1, .row3 {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .edit-form input {
+        width: 70%; /* form stays clean */
+    }
+}
+
+@media (min-width: 1024px) {
+  .hamburger-btn { display: none; }   /* hide mobile icon on desktop */
+  .nav-options   { display: block; }  /* show the desktop nav */
+  .mobile-menu   { display: none; }   /* ensure slide menu is hidden */
+}
+@media (min-width: 1024px) {
+    .navbar {
+        padding: 0 40px;
+        height: 70px;
+    }
+    .nav-options ul {
+        display: flex;
+        align-items: center;
+        gap: 60px;
+        list-style: none;
+    }
+    .nav-options ul li a {
+        color: white;
+        font-size: 1.1rem;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .nav-options ul li a:hover {
+        color: yellow;
+    }
+}
+/* Hide dropdown content by default */
+.dropdown {
+    display: none;
+    position: absolute;
+    background-color: #494975;
+    min-width: 150px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 8px 0;
+    z-index: 3000;
+    left: 50%; /* Position the LEFT EDGE of the element at 50% of the parent’s width. */
+    transform: translateX(-50%);
+}
+/* Show dropdown on hover (desktop only) */
+@media (min-width: 1024px) {
+    .dropdown-parent {
+        position: relative;  /* required for absolute dropdown */
+    }
+    .dropdown-parent:hover .dropdown {
+        display: block;
+    }
+    .dropdown p {
+        padding: 10px 16px;
+        color: white;
+        cursor: pointer;
+    }
+    .dropdown p:hover {
+        background-color: #5a5aa3;
+    }
 }
