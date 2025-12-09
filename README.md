@@ -9,11 +9,11 @@ This version includes a complete **responsive redesign**, supporting both **desk
 
 ## 🚀 Features
 
-### 🔐 Authentication
+### 🔐 Authentication  
 - User Signup  
 - User Login  
 - JWT saved in `localStorage`  
-- Auto-protects private pages (redirects to login if token is missing)
+- Auto-redirects to login if token is missing or invalid  
 
 ---
 
@@ -23,19 +23,20 @@ This version includes a complete **responsive redesign**, supporting both **desk
 - Update entries  
 - Delete entries  
 - Clean, card-based UI  
-- Fully responsive layout  
-- Dynamic DOM rendering (no page reloads)
+- Responsive layout  
+- Dynamic DOM rendering (no page reloads)  
+- Local caching for faster UI interactions  
 
 ---
 
 ## 👤 User Profile
 - Edit username  
-- Change password (toggle section appears only when requested)  
+- Change password (section expands only when requested)  
 - Delete account  
 - Frontend validation for:
   - Password mismatch  
   - Incorrect old password  
-- Success/error feedback messages
+- Smooth error/success messages  
 
 ---
 
@@ -43,16 +44,16 @@ This version includes a complete **responsive redesign**, supporting both **desk
 
 ### **Mobile View**
 - Hamburger menu  
-- Full-screen slide-in navigation  
-- Touch-friendly UI  
-- Forms stretch to 100% width for readability  
+- Slide-in full-screen navigation  
+- Touch-friendly layout  
+- Forms automatically stretch for readability  
 
 ### **Desktop View**
-- Clean navbar with dropdown menus  
-- Hover-activated dropdowns  
+- Navbar with hover dropdown menus  
+- Multi-section layout  
 - Journals displayed in wider cards  
-- Forms centered with max-width  
-- Buttons repositioned (bottom-right for entries)
+- Centered forms with max-width  
+- Buttons positioned cleanly (e.g., bottom-right for entries)
 
 ---
 
@@ -61,10 +62,66 @@ This version includes a complete **responsive redesign**, supporting both **desk
 | Layer | Technology |
 |-------|-------------|
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
-| **Fonts** | Google Fonts (Poppins, Dancing Script) |
+| **Backend** | Spring Boot (JWT Auth, MongoDB Atlas) |
+| **Deployment** | Netlify (frontend), Render (backend via Docker) |
 | **Icons** | Font Awesome |
-| **Auth** | JWT (stored in localStorage) |
-| **Communication** | Fetch API |
+| **Fonts** | Google Fonts (Poppins, Dancing Script) |
+| **Communication** | Fetch API (GET, POST, PUT, DELETE) |
+
+---
+
+## 🔗 Backend API (Production)
+
+Base URL:
+
+```
+https://journal-app-backend-soa3.onrender.com
+```
+
+### Public Endpoints  
+```
+POST /public/login
+POST /public/signup
+GET  /public/health-check
+```
+
+### Journal Endpoints  
+```
+GET    /journal
+POST   /journal
+PUT    /journal/id/{id}
+DELETE /journal/id/{id}
+```
+
+### User Endpoints  
+```
+GET    /user
+PUT    /user
+DELETE /user
+```
+
+All private endpoints require:
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## 🔧 Local Development API (When using Live Server)
+
+Backend local URL:
+
+```
+http://localhost:8080
+```
+
+CORS must allow:
+
+```
+http://localhost:5500
+http://127.0.0.1:5500
+```
 
 ---
 
@@ -92,78 +149,60 @@ Journal App/
 
 ---
 
-## 🔌 Backend API Dependency
-
-This frontend expects a backend running at:
-
-```
-http://localhost:8080
-```
-
-Endpoints used:
-
-### **Authentication**
-```
-POST /public/signup
-POST /public/login
-```
-
-### **Journal**
-```
-GET    /journal
-POST   /journal
-PUT    /journal/id/{id}
-DELETE /journal/id/{id}
-```
-
-### **User**
-```
-GET    /user
-PUT    /user
-DELETE /user
-```
-
-CORS must allow:
-
-```
-http://localhost:5500
-```
-
-(or your Netlify domain after deployment)
-
----
-
 ## ▶️ Running the Frontend
 
 ### **Using VS Code Live Server**
-1. Install Live Server extension  
+1. Install the **Live Server** extension  
 2. Right-click `index.html`  
-3. Choose **Open with Live Server**  
+3. Select **Open with Live Server**  
 
-Or deploy using:
+This runs at:
+
+```
+http://127.0.0.1:5500/
+```
+
+Alternatively deploy using:
 - Netlify  
 - GitHub Pages  
 - Vercel  
 
 ---
 
+## 🌍 Deployment Information
+
+### Backend  
+- **Platform:** Render  
+- **Runtime:** Docker (multi-stage build)  
+- **Database:** MongoDB Atlas  
+- **Status:** ✔️ Live and stable  
+
+### Frontend  
+- **Platform:** Netlify  
+- **Status:** Deployment update pending  
+
+A **live demo URL** will be added after Netlify deployment.
+
+---
+
 ## 🔒 Security Notes
-- No secrets are stored on the frontend  
-- JWT is kept in `localStorage`  
-- Sensitive operations validated by backend  
-- Auto-redirect prevents unauthorized access to journal.html  
+- No secrets stored on the frontend  
+- JWT stored in `localStorage` (simple project approach)  
+- All auth & authorization enforced by backend  
+- CORS configured correctly for both local + production  
+- Unauthorized users instantly redirected  
 
 ---
 
-## 🚀 Future Improvements
-- Better UI animations (delete/update)  
-- Improved empty-state visuals  
-- Dark mode  
-- Backend deployment for full-stack online hosting  
-- Real-time username validation  
+## 📌 Future Improvements  
+- Better UI animations  
+- Real-time username availability check  
+- Dark/Light mode toggle  
+- Export journals as PDF  
+- Rich text editor  
+- Activity history / timeline  
 
 ---
 
-## 📄 License
-This project is open-source. You may modify and use it for learning or personal projects.
-
+## 📄 License  
+This project is open-source. Feel free to modify and use it for learning or portfolio building.

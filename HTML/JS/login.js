@@ -3,7 +3,7 @@ let usernameInput = document.querySelector(".form-group .username");
 let passwordInput = document.querySelector(".form-group .password");
 let usernameError = document.querySelector(".form-group .user");
 let passwordError = document.querySelector(".form-group .pass");
-const URL = "http://localhost:8080/public/login";
+const URL = "https://journal-app-backend-soa3.onrender.com/public/login";
 
 
 const submitData = async (event) => {

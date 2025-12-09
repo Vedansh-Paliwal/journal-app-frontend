@@ -3,8 +3,8 @@ let journalCache = [];
  *     API ENDPOINTS   *
  ***********************/
 
-const URL_JOURNAL = "http://localhost:8080/journal";
-const URL_USER    = "http://localhost:8080/user";
+const URL_JOURNAL = "https://journal-app-backend-soa3.onrender.com/journal";
+const URL_USER    = "https://journal-app-backend-soa3.onrender.com/user";
 
 
 /***********************
@@ -212,6 +212,7 @@ async function getJournalsList() {
     if(response.status === 204) {
         document.querySelector(".content").style.display = "none";
         const entriesDiv = document.querySelector(".entries");
+        entriesDiv.style.display = "block";
         entriesDiv.innerHTML = "<p>No journal entries available!</p>";
         return;
     }
